@@ -29,17 +29,61 @@
 Primeiramente leia a documentação da API, para entender o que cada endpoint **precisa** para ser consumido e **fornece** como resposta. Dados, headers, parâmetros, etc.
 
 ### Minha Resolução:
+
 [ ✔ ]
 
 ## Exercício 2
 
 ### Enunciado:
 
-Para iniciar no código, iremos mudar o arquivo `Playlists.js`. Atualmente as playlists estão como dados mockados no arquivo, mas precisamos que elas venham da API. Altere a origem das playlists.
-
-Lembre-se de instalar o `axios`, e importá-lo quando for necessário.
+Para iniciar no código, iremos mudar o arquivo `Playlists.js`. Atualmente as playlists estão como dados mockados no arquivo, mas precisamos que elas venham da API. Altere a origem das playlists. Lembre-se de instalar o `axios`, e importá-lo quando for necessário.
 
 ### Minha Resolução:
+
+1. Instalei e importei o axios;
+2. Criei a função de faz a requisição para pegar o nome das playlists da seguinte forma:
+
+    ```
+    const getAllPlaylists = () => {
+            const headers = {
+                headers: {
+                    Authorization: 'amanda-polari-easley',
+                },
+            };
+
+            axios
+                .get(
+                    `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists`,
+                    headers
+                )
+                .then((resp) => {
+                    // console.log(resp.data.result.list);
+                    setPlaylists(resp.data.result.list);
+                })
+                .catch((err) => {
+                    // console.log('Erro: NÃO pegou todas as playlists', err.response);
+                });
+        };
+    ```
+
+3. Criei um useEffect para que toda vez que apágina for montada a função de pegar todas as playlists seja chamada:
+
+    ```
+    useEffect(() => {
+            getAllPlaylists();
+        }, []);
+    ```
+
+-   Obs: O nome da playlist setá sendo passado por props para o componente que irá renderiza-lo:
+    ```
+    return (
+            <div>
+                {playlists.map((playlist) => {
+                    return <Musicas key={playlist.id} playlist={playlist} />;
+                })}
+            </div>
+        );
+    ```
 
 ## Exercício 3
 
