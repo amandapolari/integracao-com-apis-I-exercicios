@@ -41,7 +41,8 @@ Para iniciar no código, iremos mudar o arquivo `Playlists.js`. Atualmente as pl
 ### Minha Resolução:
 
 1. Instalei e importei o axios;
-2. Criei a função de faz a requisição para pegar o nome das playlists da seguinte forma:
+2. Utilizei o endpoint `getAllPlaylists` que precisa do input: `headers`
+3. Criei a função de faz a requisição para pegar o nome das playlists da seguinte forma:
 
     ```
     const getAllPlaylists = () => {
@@ -66,7 +67,7 @@ Para iniciar no código, iremos mudar o arquivo `Playlists.js`. Atualmente as pl
         };
     ```
 
-3. Criei um useEffect para que toda vez que apágina for montada a função de pegar todas as playlists seja chamada:
+4. Criei um useEffect para que toda vez que apágina for montada a função de pegar todas as playlists seja chamada:
 
     ```
     useEffect(() => {
@@ -94,6 +95,39 @@ Atenção para este endpoint: como a API sabe de qual playlist estamos importand
 
 ### Minha Resolução:
 
+1. Importe o `axios` para o componente `Musicas.js`;
+2. Utilizei o endpoint `getPlaylistTracks` que precisa dos inputs: `headers` e `path param`
+3. Fiz a função da requisição e também chamei esta função no useEffect para que ela seja executada quando a página for montada:
+
+    ```
+    const [musicas, setMusicas] = useState([]);
+
+    useEffect(() => {
+        getPlaylistTracks(props.playlist.id);
+    }, []);
+
+    const getPlaylistTracks = (playlistId) => {
+        const headers = {
+            headers: {
+                Authorization: 'amanda-polari-easley',
+            },
+        };
+
+        axios
+            .get(
+                `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${playlistId}/tracks`,
+                headers
+            )
+            .then((resp) => {
+                // console.log(resp.data.result.tracks);
+                setMusicas(resp.data.result.tracks);
+            })
+            .catch((err) => {
+                // console.log(err.reponse);
+            });
+    };
+    ```
+
 ## Não inicie os exercícios a seguir antes de ter conseguido resolver os 3 acima!
 
 ## Exercício 4
@@ -104,6 +138,73 @@ Já possuímos os dados vindos da API, mas agora precisamos criar uma função p
 (caso prefira, você pode utilizar o link http://spoti4.future4.com.br/1.mp3, mudando apenas o número de cada música, de 1 a 98)
 
 ### Minha Resolução:
+
+1.  Utilizei o endpoint `addTrackToPlaylist` que precisa dos inputs: `headers`, `path params` e `body`
+2.  Para isso precisei adicionar mais três estados e aplicar os inputs controlados:
+
+        ```
+        const [name, setName] = useState('');
+        const [artist, setArtist] = useState('');
+        const [url, setUrl] = useState('');
+        ```
+
+        ```
+        <ContainerInputs>
+            <InputMusica
+                placeholder="artista"
+                value={artist}
+                onChange={(e) => setArtist(e.target.value)}
+                    />
+            <InputMusica
+                placeholder="musica"
+                value={name}
+                 onChange={(e) => setName(e.target.value)}
+                    />
+            <InputMusica
+                placeholder="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                    />
+             <Botao onClick={() => addTrackToPlaylist(props.playlist.id)}>
+                 Adicionar musica
+             </Botao>
+        </ContainerInputs>
+        ```
+
+    3 . Criei a função que adiciona música à playlist:
+    ```
+    const addTrackToPlaylist = (playlistId) => {
+    const headers = {
+    headers: {
+    Authorization: 'amanda-polari-easley',
+    },
+    };
+
+            const body = {
+                name,
+                artist,
+                url,
+            };
+
+            axios
+                .post(
+                    `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${playlistId}/tracks`,
+                    body,
+                    headers
+                )
+                .then(() => {
+                    // console.log('Funcinou: Adicionou Músicas');
+                    setName('');
+                    setArtist('');
+                    setUrl('');
+                    getPlaylistTracks(props.playlist.id);
+                })
+                .catch((err) => {
+                    // console.log('Erro: ', err);
+                });
+            };
+
+    ```
 
 ## Exercício 5
 
