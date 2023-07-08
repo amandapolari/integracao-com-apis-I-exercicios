@@ -70,6 +70,26 @@ export default function Musicas(props) {
             });
     };
 
+    const removeTrackFromPlaylist = (trackId) => {
+        const headers = {
+            headers: {
+                Authorization: 'amanda-polari-easley',
+            },
+        };
+
+        axios
+            .delete(
+                `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${trackId}`,
+                headers
+            )
+            .then(() => {
+                getPlaylistTracks(props.playlist.id);
+            })
+            .catch((error) => {
+                // console.log('Não removeu', error.response);
+            });
+    };
+
     return (
         <ContainerMusicas>
             <h2>{props.playlist.name}</h2>
@@ -80,7 +100,13 @@ export default function Musicas(props) {
                             {musica.name} - {musica.artist}
                         </h3>
                         <audio src={musica.url} controls />
-                        <button>X</button>
+                        <button
+                            onClick={() => {
+                                removeTrackFromPlaylist(musica.id);
+                            }}
+                        >
+                            X
+                        </button>
                     </Musica>
                 );
             })}

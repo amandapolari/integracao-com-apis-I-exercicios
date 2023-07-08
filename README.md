@@ -172,6 +172,7 @@ Já possuímos os dados vindos da API, mas agora precisamos criar uma função p
         ```
 
     3 . Criei a função que adiciona música à playlist:
+
     ```
     const addTrackToPlaylist = (playlistId) => {
     const headers = {
@@ -213,3 +214,37 @@ Já possuímos os dados vindos da API, mas agora precisamos criar uma função p
 Para finalizar, precisamos criar uma função para remover as músicas de uma playlist (note que já temos um botão no layout para isso, marcado com `x` ao lado de cada música)
 
 ### Minha Resolução:
+
+1.  Utilizei o endpoint `removeTrackFromPlaylist` que precisa dos inputs: `headers`, `path params` que possui: `playlistId` e `trackId`
+2. montei a função da seguinte maneira:
+    ```
+    const removeTrackFromPlaylist = (trackId) => {
+            const headers = {
+                headers: {
+                    Authorization: 'amanda-polari-easley',
+                },
+            };
+
+            axios
+                .delete(
+                    `https://us-central1-labenu-apis.cloudfunctions.net/labefy/playlists/${props.playlist.id}/tracks/${trackId}`,
+                    headers
+                )
+                .then(() => {
+                    getPlaylistTracks(props.playlist.id);
+                })
+                .catch((err) => {
+                    // console.log('Não removeu', err.response);
+                });
+        };
+    ```
+3. E chamei no botão correspondente:
+    ```
+    <button
+                                onClick={() => {
+                                    removeTrackFromPlaylist(musica.id);
+                                }}
+                            >
+                                X
+    </button>
+    ```
